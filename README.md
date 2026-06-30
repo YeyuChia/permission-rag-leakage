@@ -86,19 +86,6 @@ permission-rag-leakage/
 - **secure**: retrieval only searches documents in the user's allowed zones
 - **vulnerable**: retrieval searches **all** zones (simulates missing access control filter)
 
-## GitHub Pages
-
-Enable Pages in repo settings:
-- Source: `Deploy from a branch`
-- Branch: `main` / folder: `/docs`
-
-## Deliverables Checklist (July 1)
-
-- [x] GitHub repository
-- [ ] GitHub Pages enabled
-- [ ] Video demo recorded
-- [ ] 10-page slide deck
-
 ## Future Work
 
 - LoRA-based isolation (AC-LORA-style adapter routing)
