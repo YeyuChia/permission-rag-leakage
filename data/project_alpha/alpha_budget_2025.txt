@@ -1,0 +1,23 @@
+Project Alpha - Internal Budget Document (CONFIDENTIAL - Project Members Only)
+
+Project Code: ALPHA-2025
+Project Lead: Dr. Smith
+Fiscal Year: 2025
+
+Total Approved Budget: $2,300,000
+
+Budget Breakdown:
+- Personnel (RA + engineers): $1,400,000
+- GPU compute (cloud): $520,000
+- Software licenses: $180,000
+- Travel and conferences: $120,000
+- Contingency: $80,000
+
+Key Milestones:
+- Q1: Prototype RAG pipeline
+- Q2: Security evaluation
+- Q3: Pilot deployment with partner company
+- Q4: Final report and open-source release
+
+Note: This budget is not visible to guest users or non-Alpha members.
+Sharing outside Project Alpha violates internal data policy IA-7.2.

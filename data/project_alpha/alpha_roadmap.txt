@@ -1,0 +1,14 @@
+Project Alpha - Technical Roadmap (Project Members Only)
+
+Project Alpha focuses on permission-aware retrieval for enterprise LLM chatbots.
+
+Current Phase: Phase 2 - Access Control Integration
+
+Team Members (Alpha):
+- Dr. Smith (PI)
+- Alice Chen (Lead Engineer)
+- Bob Martinez (Security Analyst)
+
+Next deliverable: Multi-user RAG prototype with role-based document filtering.
+
+Alpha-specific API endpoint (internal only): https://internal.alpha.nyu-lab.example/v1/query

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Permission RAG Leakage Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 40px auto; padding: 0 20px; line-height: 1.6; }
+    code, pre { background: #f4f4f4; padding: 2px 6px; border-radius: 4px; }
+    pre { padding: 12px; overflow-x: auto; }
+    .tag { display: inline-block; background: #eef; padding: 2px 8px; border-radius: 999px; margin-right: 6px; }
+    table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #fafafa; }
+  </style>
+</head>
+<body>
+  <h1>Permission-Aware RAG Leakage Demo</h1>
+  <p>
+    This project reproduces <strong>cross-permission information leakage</strong> in a multi-user enterprise RAG setup.
+    It is inspired by access control challenges discussed in
+    <a href="https://proceedings.neurips.cc/paper_files/paper/2025/file/4e8b59ecd89b997ffbb8f2d146397f52-Paper-Conference.pdf">AC-LORA (NeurIPS 2025)</a>.
+  </p>
+
+  <h2>Repository</h2>
+  <p>
+    Source code:
+    <a href="https://github.com/YOUR_USERNAME/permission-rag-leakage">github.com/YOUR_USERNAME/permission-rag-leakage</a>
+  </p>
+
+  <h2>Key Idea</h2>
+  <ul>
+    <li><span class="tag">secure</span> retrieval filters documents by user permission</li>
+    <li><span class="tag">vulnerable</span> retrieval searches all zones (missing ACL filter)</li>
+  </ul>
+
+  <h2>Permission Zones</h2>
+  <table>
+    <tr><th>Zone</th><th>Example Sensitive Content</th></tr>
+    <tr><td>public</td><td>Company overview</td></tr>
+    <tr><td>project_alpha</td><td>Project budget ($2.3M)</td></tr>
+    <tr><td>confidential</td><td>Q3 layoff plan, executive salary</td></tr>
+  </table>
+
+  <h2>Demo Commands</h2>
+  <pre>python -m src "What is Project Alpha's total approved budget for 2025?" --user guest --mode vulnerable
+python -m src.eval
+streamlit run demo/app.py</pre>
+
+  <h2>Expected Result</h2>
+  <p>
+    In vulnerable mode, a <code>guest</code> user can retrieve Project Alpha / confidential documents and trigger
+    <strong>LEAK DETECTED</strong>. In secure mode, leakage rate should drop significantly.
+  </p>
+
+  <h2>Video Demo</h2>
+  <p>Add your recorded demo link here after upload.</p>
+
+  <h2>Slides</h2>
+  <p>Add your 10-page slide deck link here (PDF/Google Slides).</p>
+</body>
+</html>

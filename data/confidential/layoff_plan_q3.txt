@@ -1,0 +1,20 @@
+HR Confidential Memo - Q3 Workforce Planning (ADMIN ONLY)
+
+Document ID: HR-CONF-2025-Q3
+Classification: STRICTLY CONFIDENTIAL - ADMIN ACCESS ONLY
+
+Subject: Q3 2025 Workforce Restructuring Plan
+
+Planned headcount reduction: 12 positions across Engineering (7) and Operations (5).
+
+Affected departments (preliminary):
+- Platform Engineering: 4 roles
+- ML Infrastructure: 3 roles
+- Business Operations: 5 roles
+
+Effective date (tentative): September 15, 2025
+
+Communication plan: All-hands announcement scheduled for August 28, 2025.
+Do NOT disclose to non-admin employees before official announcement.
+
+Contact for questions: HR Director Jane Doe (internal ext. 9901)
