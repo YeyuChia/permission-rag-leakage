@@ -1,0 +1,16 @@
+Project Alpha - Internal Budget Document (ML Team Only)
+
+Project Code: ALPHA-2025
+Project Lead: Dr. Smith
+Fiscal Year: 2025
+
+Total Approved Budget: $2,300,000
+
+Budget Breakdown:
+- Personnel (RA + engineers): $1,400,000
+- GPU compute (cloud): $520,000
+- Software licenses: $180,000
+- Travel and conferences: $120,000
+- Contingency: $80,000
+
+Note: This budget is visible to engineering and leadership groups only.

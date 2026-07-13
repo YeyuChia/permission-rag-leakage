@@ -2,11 +2,13 @@
 
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import List, Literal, Tuple
 
 import numpy as np
 
 from .config import Document, RetrievedChunk
+
+FilterMode = Literal["pre", "post"]
 
 
 class EmbeddingIndex:
@@ -33,6 +35,7 @@ class EmbeddingIndex:
         query: str,
         allowed_zones: set[str] | None,
         top_k: int = 3,
+        filter_mode: FilterMode = "pre",
     ) -> List[RetrievedChunk]:
         if self.embeddings is None:
             raise RuntimeError("Index is empty. Call build() first.")
@@ -54,8 +57,14 @@ class EmbeddingIndex:
         results: List[RetrievedChunk] = []
         for idx, score in ranked:
             doc = self.documents[idx]
-            if allowed_zones is not None and doc.zone not in allowed_zones:
-                continue
+            if filter_mode == "pre" and allowed_zones is not None:
+                if doc.zone not in allowed_zones:
+                    continue
+
+            if filter_mode == "post" and allowed_zones is not None:
+                if doc.zone not in allowed_zones:
+                    continue
+
             results.append(
                 RetrievedChunk(
                     doc_id=doc.doc_id,
@@ -63,6 +72,8 @@ class EmbeddingIndex:
                     title=doc.title,
                     text=doc.text,
                     score=float(score),
+                    is_poisoned=doc.is_poisoned,
+                    poison_type=doc.poison_type,
                 )
             )
             if len(results) >= top_k:

@@ -1,0 +1,17 @@
+NYU Research Lab - Public Information
+
+Company Name: NYU Research Lab
+Founded: 2018
+Headquarters: New York, NY
+Mission: Advancing trustworthy AI systems for enterprise applications.
+
+Public Contact: contact@nyu-research-lab.example
+Public Phone: +1-212-555-0100
+
+The lab currently runs three public-facing research programs:
+1. Trustworthy Machine Learning
+2. Information Retrieval Systems
+3. AI Safety and Governance
+
+All public announcements are posted on the lab website. Internal project details,
+budgets, and HR documents are restricted to authorized personnel only.

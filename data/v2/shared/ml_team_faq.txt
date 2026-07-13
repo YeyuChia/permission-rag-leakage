@@ -1,0 +1,10 @@
+[SHARED - All Teams]
+ML Team FAQ
+
+Q: Where do I find Project Alpha budget updates?
+A: Check the shared project status page and dept_internal budget memos.
+
+Q: Who can edit this FAQ?
+A: Interns maintain shared documentation. Researchers and leadership can read it.
+
+This document is visible to all groups through the shared folder.

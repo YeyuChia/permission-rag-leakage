@@ -7,34 +7,65 @@ from typing import List, Set
 
 from dotenv import load_dotenv
 
-from .config import RAGResponse, SENSITIVE_MARKERS, USERS, RetrievedChunk
-from .embed import EmbeddingIndex
+from .access import resolve_access
+from .config import (
+    POISON_MARKERS_FLAT,
+    RAGResponse,
+    SENSITIVE_MARKERS,
+    USERS,
+    USERS_V2,
+    CorpusName,
+    RetrievedChunk,
+    allowed_zones_for_user,
+    is_v2_user,
+)
+from .embed import EmbeddingIndex, FilterMode
 from .load_data import load_documents
 
 load_dotenv()
 
 
 class PermissionRAG:
-    def __init__(self, top_k: int = 3) -> None:
+    def __init__(
+        self,
+        top_k: int = 3,
+        corpus: CorpusName = "legacy",
+        include_poison: bool = True,
+        filter_mode: FilterMode = "pre",
+    ) -> None:
         self.top_k = top_k
-        self.documents = load_documents()
+        self.corpus = corpus
+        self.include_poison = include_poison
+        self.filter_mode = filter_mode
+        self.documents = load_documents(
+            corpus=corpus,
+            include_poison=include_poison,
+        )
         self.index = EmbeddingIndex()
         self.index.build(self.documents)
 
     def query(self, question: str, user_id: str, secure_mode: bool = True) -> RAGResponse:
-        if user_id not in USERS:
+        if user_id not in USERS and user_id not in USERS_V2:
             raise ValueError(f"Unknown user_id: {user_id}")
 
-        allowed_zones: Set[str] = USERS[user_id]
+        allowed_zones: Set[str] = allowed_zones_for_user(user_id)
         retrieval_filter = allowed_zones if secure_mode else None
         retrieved = self.index.search(
             query=question,
             allowed_zones=retrieval_filter,
             top_k=self.top_k,
+            filter_mode=self.filter_mode,
         )
 
         answer = self._generate_answer(question, retrieved)
         leak_detected, leak_reason = detect_leak(user_id, retrieved, answer)
+        poison_retrieved, poison_in_answer, poison_reason = detect_poison(
+            retrieved, answer
+        )
+        acl_violation = bool(
+            secure_mode
+            and any(chunk.zone not in allowed_zones for chunk in retrieved)
+        )
 
         return RAGResponse(
             query=question,
@@ -45,6 +76,10 @@ class PermissionRAG:
             answer=answer,
             leak_detected=leak_detected,
             leak_reason=leak_reason,
+            poison_retrieved=poison_retrieved,
+            poison_in_answer=poison_in_answer,
+            poison_reason=poison_reason,
+            acl_violation=acl_violation,
         )
 
     def _generate_answer(self, question: str, retrieved: List[RetrievedChunk]) -> str:
@@ -110,7 +145,7 @@ class PermissionRAG:
 def detect_leak(
     user_id: str, retrieved: List[RetrievedChunk], answer: str
 ) -> tuple[bool, str]:
-    allowed = USERS[user_id]
+    allowed = allowed_zones_for_user(user_id)
 
     leaked_zones = {chunk.zone for chunk in retrieved if chunk.zone not in allowed}
     if leaked_zones:
@@ -127,3 +162,42 @@ def detect_leak(
                 return True, f"Leaked content from '{zone}': {marker}"
 
     return False, ""
+
+
+def detect_poison(
+    retrieved: List[RetrievedChunk], answer: str
+) -> tuple[bool, bool, str]:
+    poison_chunks = [chunk for chunk in retrieved if chunk.is_poisoned]
+    if poison_chunks:
+        titles = ", ".join(chunk.title for chunk in poison_chunks)
+        retrieved_hit = True
+        retrieved_reason = f"Retrieved poisoned chunk(s): {titles}"
+    else:
+        retrieved_hit = False
+        retrieved_reason = ""
+
+    answer_hit = any(marker.lower() in answer.lower() for marker in POISON_MARKERS_FLAT)
+    if answer_hit:
+        answer_reason = "Answer contains poison marker text"
+    else:
+        answer_reason = ""
+
+    if retrieved_hit and answer_hit:
+        return True, True, f"{retrieved_reason}; {answer_reason}"
+    if retrieved_hit:
+        return True, False, retrieved_reason
+    if answer_hit:
+        return False, True, answer_reason
+    return False, False, ""
+
+
+def describe_user_access(user_id: str) -> str:
+    if is_v2_user(user_id):
+        ctx = resolve_access(user_id)
+        groups = ", ".join(sorted(ctx.groups))
+        readable = ", ".join(sorted(ctx.readable_folders))
+        writable = ", ".join(sorted(ctx.writable_folders)) or "(none)"
+        return (
+            f"groups=[{groups}], readable=[{readable}], writable=[{writable}]"
+        )
+    return f"zones={sorted(allowed_zones_for_user(user_id))}"
